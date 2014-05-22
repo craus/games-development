@@ -1,2 +1,7 @@
-x = 3
-console.log(x+4)
+play = require('./play.js')
+user1 = user2 = require('./bot.js')
+play(user1, user2)
+
+
+
+
