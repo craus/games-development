@@ -9,7 +9,7 @@ function start() {
 			{
 				creatures: [],
 				mana: 1,
-				hp: 12
+				hp: 1
 			}
 		],
 		creaturesMoved: 'all',
@@ -130,7 +130,7 @@ function nextCreature(game) {
 function creatureMoveWins(game, indent) {
 	creature = game.players[0].creatures[game.creaturesMoved]
 	if (creature.splash) {
-		game.players[1].creatures.each(function(target) { hit(creature, target) })
+		game.players[1].creatures.forEach(function(target) { hit(creature, target) })
 		hit(creature, game.players[1])
 		nextCreature(game)
 		cleanCreatures(game.players[1])
@@ -142,18 +142,20 @@ function creatureMoveWins(game, indent) {
 		if (firstWins(newGame, indent)) return true
 
 		for (var i = 0; i < game.players[1].creatures.length; i++) {
-			var newGame = clone(game)
-			hit(creature, newGame.players[1].creatures[i])
-			nextCreature(newGame)
-			cleanCreatures(newGame.players[1])
-			if (firstWins(newGame, indent)) return true
+			if (game.players[1].creatures[i].armor < creature.damage) {
+				var newGame = clone(game)
+				hit(creature, newGame.players[1].creatures[i])
+				nextCreature(newGame)
+				cleanCreatures(newGame.players[1])
+				if (firstWins(newGame, indent)) return true
+			}
 		}
 		return false
 	}	
 }
 
 function firstWins(game, indent) {
-	console.log(indent + gameToString(game))
+	if (verbose) console.log(indent + gameToString(game))
 	var newIndent = indent + '  '
 
 	if (game.players[0].hp < 1) return false
@@ -173,4 +175,5 @@ function testClone() {
 	console.log(game.players[0].hp)
 }
 
+var verbose = true
 console.log(firstWins(start(), ''))
